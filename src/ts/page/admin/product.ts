@@ -156,22 +156,19 @@ export const handleProductPage = async (): Promise<void> => {
   deleteBtn.addEventListener('click', async () => {
     const productsEl = $$<any>('.product-container__list li');
 
-    const newProductsEl = [...productsEl].filter(
+    const checkedProductsEl = [...productsEl].filter(
       (productEl: any) => productEl.querySelector('input').checked === true,
     );
 
-    if (newProductsEl.length === 0) {
+    if (checkedProductsEl.length === 0) {
       alert('삭제할 상품을 선택해주세요.');
       return;
     }
 
     if (confirm('선택한 상품을 삭제하시겠습니까? ')) {
-      await Promise.all(
-        newProductsEl.map(
-          async (newProductEl: any) =>
-            await deleteProduct(newProductEl.dataset.id),
-        ),
-      );
+      for (const checkedProductEl of checkedProductsEl) {
+        await deleteProduct(checkedProductEl.dataset.id);
+      }
 
       products = await getAllProducts();
       productList.innerHTML = '';
